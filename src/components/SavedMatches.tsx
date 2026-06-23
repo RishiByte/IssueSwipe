@@ -82,6 +82,7 @@ export default function SavedMatches() {
 
       if (res.ok) {
         setMatches((prev) => prev.filter((m) => m.issue.id !== issueId));
+        window.dispatchEvent(new Event('pathnameChange'));
       }
     } catch (err) {
       console.error('Failed to delete bookmark:', err);
@@ -99,7 +100,6 @@ export default function SavedMatches() {
 
       if (res.ok) {
         const data = await res.json();
-        // Update local status
         setMatches((prev) =>
           prev.map((m) =>
             m.issue.id === issueId
@@ -108,14 +108,12 @@ export default function SavedMatches() {
           )
         );
 
-        // Trigger floaters
         if (status === 'SUBMITTED') {
           triggerXpToast(100);
         } else if (status === 'MERGED') {
           triggerXpToast(250);
         }
         
-        // Refresh page metrics (re-sync header profile stats)
         window.dispatchEvent(new Event('pathnameChange'));
       }
     } catch (err) {
@@ -123,7 +121,6 @@ export default function SavedMatches() {
     }
   };
 
-  // Compile list of languages present in user's saved matches for filter badges
   const languagesList = Array.from(
     new Set(
       matches
@@ -133,7 +130,7 @@ export default function SavedMatches() {
   );
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-8 px-4 relative">
+    <div className="w-full max-w-4xl mx-auto py-6 px-4 relative select-none">
       {/* Floating XP Toasts */}
       <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
         <AnimatePresence>
@@ -143,7 +140,7 @@ export default function SavedMatches() {
               initial={{ opacity: 0, y: 20, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1.2 }}
               exit={{ opacity: 0, y: -40 }}
-              className="flex items-center space-x-1 px-4 py-2 rounded-full bg-brand-green text-white text-sm font-black shadow-lg glow-green"
+              className="flex items-center space-x-1 px-4 py-2 rounded-full bg-brand-green text-white text-sm font-black shadow-lg"
             >
               <Award className="h-4 w-4" />
               <span>{toast.text}</span>
@@ -152,35 +149,35 @@ export default function SavedMatches() {
         </AnimatePresence>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      {/* Header and Search */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-3xl font-extrabold text-white">Saved Matches</h2>
-          <p className="text-sm text-gray-400 mt-1">Review saved issues and track contribution workflow.</p>
+          <h2 className="text-xl font-bold text-text-primary">Saved Matches</h2>
+          <p className="text-xs font-semibold text-text-secondary mt-1">Review saved issues and track contribution workflow.</p>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-tertiary" />
           <input
             type="text"
             placeholder="Search saved issues..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-dark-card border border-white/5 text-sm focus:border-brand-blue outline-none transition-colors"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-pill text-xs text-text-primary border border-dark-border focus:border-brand-purple outline-none transition-colors"
           />
         </div>
       </div>
 
-      {/* Language Filters */}
+      {/* Language Filter Pills */}
       {languagesList.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 mb-6">
-          <span className="text-xs text-gray-500 mr-2">Language:</span>
+          <span className="text-[11px] font-bold text-text-secondary mr-1">Language:</span>
           <button
             onClick={() => setSelectedLanguage('')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
               selectedLanguage === ''
-                ? 'bg-brand-blue/10 border-brand-blue text-brand-blue'
-                : 'bg-dark-card border-white/5 text-gray-400 hover:text-white'
+                ? 'bg-bg-highlight border-brand-purple/20 text-brand-purple'
+                : 'bg-dark-card border-dark-border text-text-secondary hover:text-text-primary'
             }`}
           >
             All
@@ -189,10 +186,10 @@ export default function SavedMatches() {
             <button
               key={lang}
               onClick={() => setSelectedLanguage(lang)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                 selectedLanguage === lang
-                  ? 'bg-brand-blue/10 border-brand-blue text-brand-blue'
-                  : 'bg-dark-card border-white/5 text-gray-400 hover:text-white'
+                  ? 'bg-bg-highlight border-brand-purple/20 text-brand-purple'
+                  : 'bg-dark-card border-dark-border text-text-secondary hover:text-text-primary'
               }`}
             >
               {lang}
@@ -205,18 +202,18 @@ export default function SavedMatches() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2].map((i) => (
-            <div key={i} className="glass rounded-2xl h-32 animate-pulse bg-dark-card/50" />
+            <div key={i} className="glass-premium rounded-2xl h-32 animate-pulse bg-bg-pill/40" />
           ))}
         </div>
       ) : matches.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center border border-white/5 space-y-4">
-          <div className="p-4 rounded-full bg-dark-border w-fit mx-auto">
-            <ShieldAlert className="h-8 w-8 text-gray-500" />
+        <div className="bg-dark-card border border-dark-border rounded-2xl p-12 text-center space-y-4">
+          <div className="p-4 rounded-full bg-bg-pill w-fit mx-auto border border-dark-border">
+            <ShieldAlert className="h-6 w-6 text-text-tertiary" />
           </div>
           <div className="space-y-1">
-            <p className="text-lg font-bold text-white">No saved matches found</p>
-            <p className="text-sm text-gray-500 max-w-sm mx-auto">
-              Go back to the swipe feed to find and save issues, or clear your active filters.
+            <p className="text-sm font-bold text-text-primary">No saved matches found</p>
+            <p className="text-xs text-text-secondary max-w-sm mx-auto leading-relaxed">
+              Go back to the swipe feed to find and save issues, or adjust your active filters.
             </p>
           </div>
         </div>
@@ -229,42 +226,42 @@ export default function SavedMatches() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="glass-premium rounded-2xl p-5 border border-white/5 hover:border-white/10 transition-all flex flex-col md:flex-row justify-between gap-6"
+                className="bg-dark-card rounded-2xl p-5 border border-dark-border hover:border-brand-purple/20 transition-all flex flex-col md:flex-row justify-between gap-6"
               >
                 {/* Details Section */}
-                <div className="space-y-3 flex-grow max-w-2xl">
+                <div className="space-y-2.5 flex-grow max-w-2xl">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-semibold text-brand-blue uppercase tracking-wider">
+                    <span className="text-[10px] font-bold text-brand-purple uppercase tracking-wider">
                       {match.issue.repository.owner} / {match.issue.repository.name}
                     </span>
-                    <span className="h-1 w-1 rounded-full bg-gray-600" />
-                    <span className="text-[10px] text-gray-500">
+                    <span className="h-1 w-1 rounded-full bg-text-tertiary opacity-45" />
+                    <span className="text-[10px] text-text-tertiary font-medium">
                       Saved {new Date(match.savedAt).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-white hover:text-brand-blue transition-colors leading-snug">
+                  <h3 className="text-sm font-bold text-text-primary hover:text-brand-purple transition-colors leading-snug">
                     <a href={match.issue.url} target="_blank" rel="noreferrer" className="flex items-center space-x-1">
                       <span>#{match.issue.number} {match.issue.title}</span>
-                      <ExternalLink className="h-3 w-3 inline text-gray-500 shrink-0" />
+                      <ExternalLink className="h-3 w-3 inline text-text-tertiary shrink-0" />
                     </a>
                   </h3>
 
-                  <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-text-secondary leading-relaxed line-clamp-2">
                     {match.issue.description || 'No description provided.'}
                   </p>
 
                   <div className="flex items-center gap-2">
                     {match.issue.repository.language && (
-                      <span className="px-2 py-0.5 rounded bg-dark-border text-gray-400 text-[10px] font-medium border border-white/5">
+                      <span className="px-2 py-0.5 rounded bg-bg-pill text-text-secondary text-[10px] font-bold border border-dark-border/40">
                         {match.issue.repository.language}
                       </span>
                     )}
                     <span className="px-2 py-0.5 rounded bg-brand-blue/10 text-brand-blue text-[10px] font-bold border border-brand-blue/20">
                       {match.issue.difficulty}
                     </span>
-                    <div className="flex items-center space-x-1 text-[10px] text-gray-500 pl-2">
-                      <Star className="h-3 w-3 fill-yellow-500/20 text-yellow-500/80" />
+                    <div className="flex items-center space-x-1 text-[10px] text-text-tertiary pl-2 font-medium">
+                      <Star className="h-3.5 w-3.5 fill-yellow-500/10 text-yellow-500" />
                       <span>{(match.issue.repository.stars / 1000).toFixed(1)}k stars</span>
                     </div>
                   </div>
@@ -274,27 +271,27 @@ export default function SavedMatches() {
                 <div className="flex flex-col justify-between items-end gap-4 shrink-0 md:border-l md:border-dark-border md:pl-6">
                   {/* Status Indicator */}
                   <div className="text-right">
-                    <span className="text-[10px] text-gray-500 uppercase tracking-wider block">Contribution Status</span>
+                    <span className="text-[9px] text-text-tertiary uppercase tracking-wider block font-bold">Contribution Status</span>
                     {match.issue.contributionStatus === 'OPENED' && (
-                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 text-brand-blue text-[10px] font-bold mt-1">
+                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 text-brand-blue text-[10px] font-bold mt-1.5">
                         <Sparkles className="h-3 w-3 animate-pulse" />
                         <span>Opened</span>
                       </span>
                     )}
                     {match.issue.contributionStatus === 'SUBMITTED' && (
-                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 text-[10px] font-bold mt-1">
+                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 text-[10px] font-bold mt-1.5">
                         <GitPullRequest className="h-3 w-3" />
                         <span>PR Submitted</span>
                       </span>
                     )}
                     {match.issue.contributionStatus === 'MERGED' && (
-                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-brand-green/10 text-brand-green text-[10px] font-bold mt-1">
+                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-brand-green/10 text-brand-green text-[10px] font-bold mt-1.5">
                         <GitMerge className="h-3 w-3" />
                         <span>PR Merged</span>
                       </span>
                     )}
                     {match.issue.contributionStatus === 'NONE' && (
-                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-dark-border text-gray-400 text-[10px] font-bold mt-1">
+                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-bg-pill text-text-secondary text-[10px] font-bold mt-1.5 border border-dark-border/40">
                         <span>Bookmarked</span>
                       </span>
                     )}
@@ -302,10 +299,10 @@ export default function SavedMatches() {
 
                   {/* Actions */}
                   <div className="flex items-center space-x-2 w-full md:w-auto">
-                    {/* Trash Button */}
+                    {/* Remove Bookmark Button */}
                     <button
                       onClick={() => handleRemoveMatch(match.issue.id)}
-                      className="p-2 rounded-lg border border-white/5 text-gray-500 hover:text-brand-red hover:bg-brand-red/10 hover:border-brand-red/20 transition-all cursor-pointer"
+                      className="p-2 rounded-lg border border-dark-border text-text-secondary hover:text-brand-red hover:bg-brand-red/10 hover:border-brand-red/20 transition-all cursor-pointer shadow-sm"
                       title="Remove Bookmark"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -315,7 +312,7 @@ export default function SavedMatches() {
                     {match.issue.contributionStatus === 'OPENED' && (
                       <button
                         onClick={() => handleUpdateContribution(match.issue.id, 'SUBMITTED')}
-                        className="flex items-center space-x-1 px-3.5 py-2 rounded-lg bg-brand-blue text-white hover:bg-brand-blue/90 text-xs font-bold transition-all shadow-md cursor-pointer"
+                        className="flex items-center space-x-1 px-3.5 py-2 rounded-lg bg-brand-purple text-white hover:bg-brand-purple/90 text-xs font-bold transition-all shadow-md cursor-pointer"
                       >
                         <GitPullRequest className="h-3.5 w-3.5" />
                         <span>Submit PR (+100 XP)</span>

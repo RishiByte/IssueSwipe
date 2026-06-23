@@ -5,21 +5,53 @@
   --font-sans: 'Plus Jakarta Sans', var(--font-geist-sans), sans-serif;
   --font-mono: 'JetBrains Mono', var(--font-geist-mono), monospace;
 
-  /* Custom Color Palette */
-  --color-dark-bg: #090b0f;
-  --color-dark-card: #121620;
-  --color-dark-border: #1e2536;
+  /* Custom Color Palette mapped to variables */
+  --color-dark-bg: var(--bg-main);
+  --color-dark-card: var(--bg-card);
+  --color-dark-border: var(--border-color);
+  
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-bg-pill: var(--bg-pill);
+  --color-bg-highlight: var(--bg-highlight);
+  --color-brand-purple: var(--brand-purple);
+
   --color-brand-green: #10b981;
   --color-brand-red: #f43f5e;
   --color-brand-blue: #3b82f6;
-  --color-brand-purple: #8b5cf6;
   
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 :root {
+  --bg-main: #f9fafb;
+  --bg-card: #ffffff;
+  --border-color: #e5e7eb;
+  --background: #f9fafb;
+  --foreground: #1f2937;
+  
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
+  --bg-pill: #f3f4f6;
+  --bg-highlight: #ece9fc;
+  --brand-purple: #7c3aed;
+}
+
+.dark {
+  --bg-main: #090b0f;
+  --bg-card: #121620;
+  --border-color: #1e2536;
   --background: #090b0f;
   --foreground: #f3f4f6;
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --bg-pill: #1e2536;
+  --bg-highlight: rgba(139, 92, 246, 0.1);
+  --brand-purple: #a78bfa;
 }
 
 body {
@@ -32,53 +64,71 @@ body {
 
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #090b0f;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e2536;
+  background: var(--border-color);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #313c54;
+  background: var(--text-tertiary);
 }
 
 /* Glassmorphism Styles */
 .glass {
-  background: rgba(18, 22, 32, 0.75);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
 }
 
 .glass-premium {
-  background: linear-gradient(135deg, rgba(18, 22, 32, 0.8) 0%, rgba(13, 17, 24, 0.9) 100%);
+  background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.03);
+}
+
+.dark .glass-premium {
+  background: linear-gradient(135deg, rgba(18, 22, 32, 0.8) 0%, rgba(13, 17, 24, 0.9) 100%);
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 /* Glow effects */
 .glow-green {
+  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.08);
+}
+.dark .glow-green {
   box-shadow: 0 0 40px -5px rgba(16, 185, 129, 0.15);
 }
 
 .glow-red {
+  box-shadow: 0 0 30px -5px rgba(244, 63, 94, 0.08);
+}
+.dark .glow-red {
   box-shadow: 0 0 40px -5px rgba(244, 63, 94, 0.15);
 }
 
 .glow-blue {
+  box-shadow: 0 0 30px -5px rgba(59, 130, 246, 0.08);
+}
+.dark .glow-blue {
   box-shadow: 0 0 40px -5px rgba(59, 130, 246, 0.15);
 }
 
 .glow-purple {
+  box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.08);
+}
+.dark .glow-purple {
   box-shadow: 0 0 40px -5px rgba(139, 92, 246, 0.15);
 }
 
@@ -93,7 +143,8 @@ body {
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #121620 25%, #1e2536 50%, #121620 75%);
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--border-color) 50%, var(--bg-card) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
 }
+

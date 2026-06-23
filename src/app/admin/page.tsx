@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/auth';
 import AdminDashboard from '@/components/AdminDashboard';
-import Navbar from '@/components/Navbar';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default async function AdminPage() {
   const user = await getSessionUser();
@@ -11,12 +11,11 @@ export default async function AdminPage() {
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="flex-grow py-8 relative">
-        <div className="absolute top-[10%] left-[-10%] w-[35%] h-[35%] rounded-full bg-brand-red/5 blur-[100px] pointer-events-none" />
+    <DashboardLayout>
+      <div className="flex-grow py-6 px-4 md:px-8 relative">
         <AdminDashboard />
       </div>
-    </>
+    </DashboardLayout>
   );
 }
+

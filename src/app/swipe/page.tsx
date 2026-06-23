@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/auth';
 import SwipeFeed from '@/components/SwipeFeed';
-import Navbar from '@/components/Navbar';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default async function SwipePage() {
   const user = await getSessionUser();
@@ -15,13 +15,11 @@ export default async function SwipePage() {
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="flex-grow flex flex-col justify-center items-center py-8 relative">
-        <div className="absolute top-[10%] left-[-10%] w-[35%] h-[35%] rounded-full bg-brand-red/5 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[35%] h-[35%] rounded-full bg-brand-green/5 blur-[100px] pointer-events-none" />
+    <DashboardLayout>
+      <div className="flex-grow flex flex-col justify-center items-center py-6 px-4 md:px-8 relative">
         <SwipeFeed />
       </div>
-    </>
+    </DashboardLayout>
   );
 }
+
