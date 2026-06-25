@@ -24,8 +24,8 @@ export async function GET() {
     });
 
     const swipesCount = {
-      SKIP: swipesGroup.find((g) => g.direction === 'SKIP')?._count?.id || 0,
-      CONTRIBUTE: swipesGroup.find((g) => g.direction === 'CONTRIBUTE')?._count?.id || 0,
+      SKIP: swipesGroup.find((g: any) => g.direction === 'SKIP')?._count?.id || 0,
+      CONTRIBUTE: swipesGroup.find((g: any) => g.direction === 'CONTRIBUTE')?._count?.id || 0,
     };
 
     // Popular technologies in repositories
