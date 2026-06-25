@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     });
 
     // 2. Compute scores and map structures
-    let scoredIssues = rawIssues.map((issue) => {
+    let scoredIssues = rawIssues.map((issue: any) => {
       const matchScore = calculateMatchScore(user, issue);
       return {
         ...issue,
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     // 3. Apply optional programming language filter
     if (filterLang) {
       scoredIssues = scoredIssues.filter(
-        (issue) =>
+        (issue: any) =>
           issue.repository.language?.toLowerCase() === filterLang.toLowerCase()
       );
     }
